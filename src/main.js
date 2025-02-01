@@ -104,4 +104,3 @@ loadMoreBtn.addEventListener('click', nextPageSearch);
 
 const galleryUlList = document.querySelector('.js-gallery');
 
-
