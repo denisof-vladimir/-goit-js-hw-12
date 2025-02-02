@@ -62,7 +62,7 @@ color: rgb(13, 4, 21);
 }
 .search-form{
   text-align: center;
- 
+ padding-bottom: 10px;
   font-size:30px;
 } 
 .search-input {

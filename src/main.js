@@ -40,22 +40,10 @@ const currentSearch = async () => {
     try {
         loader.classList.add('active'); // on loader
         const {data} = await getPhotos(dataUserQuery, currentPage, currentPerPage);
-        loader.classList.remove('active'); // off loader        
-        const totalPage = data.totalHits/currentPerPage;
-        if (currentPage < totalPage){
-            loadMoreBtn.classList.remove('is-hidden'); // Показати кнопку пагінації
-            }
-        else {
-            iziToast.show({
-                title: '',
-                color: 'blu',
-                position:'center',
-                message: "We're sorry, but you've reached the end of search results.!."
-            });
-        }
-            
+        loader.classList.remove('active'); // off loader 
         const pictInfo = data.hits;
-        if (pictInfo.length ==0) {
+        
+        if (pictInfo.length == 0) {
              iziToast.show({
                     title: '',
                     color: 'green',
@@ -67,6 +55,22 @@ const currentSearch = async () => {
             dataUserQuery="";
             return;
             }          
+        const totalPage = data.totalHits/currentPerPage;
+        
+        if (currentPage < totalPage){
+            loadMoreBtn.classList.remove('is-hidden'); // Показати кнопку пагінації
+            }
+        else {
+            loadMoreBtn.classList.add('is-hidden'); // Off кнопку пагінації
+            iziToast.show({
+                title: '',
+                color: 'blu',
+                position:'center',
+                message: "We're sorry, but you've reached the end of search results.!."
+
+            });
+        }  
+        
         const gallerySmallCard = 
                     pictInfo.map(pictInfo => createGaleryCard(pictInfo)).join('');
     
@@ -76,6 +80,9 @@ const currentSearch = async () => {
         new SimpleLightbox('.gallery-item a',{captionsData: 'alt', captionDelay:250});
         }
         catch (err) {
+            galleryUlList.innerHTML= '';
+            currentPage=1;
+            dataUserQuery="";
             iziToast.show({
                 title: '',
                 color: 'red',
