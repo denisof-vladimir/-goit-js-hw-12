@@ -13,6 +13,9 @@ import axios from 'axios';
 let currentPage=1;
 let dataUserQuery="";
 let currentPerPage=15;
+let lightbox = new SimpleLightbox('.gallery a', {
+        captionsData: 'alt',
+        captionDelay: 250,  });
 
 const TestAndSearch =  event => {
         event.preventDefault();
@@ -42,7 +45,7 @@ const currentSearch = async () => {
         const {data} = await getPhotos(dataUserQuery, currentPage, currentPerPage);
         loader.classList.remove('active'); // off loader 
         const pictInfo = data.hits;
-        
+        loadMoreBtn.classList.add('is-hidden'); // Off кнопку пагінації
         if (pictInfo.length == 0) {
              iziToast.show({
                     title: '',
@@ -74,12 +77,15 @@ const currentSearch = async () => {
         const gallerySmallCard = 
                     pictInfo.map(pictInfo => createGaleryCard(pictInfo)).join('');
     
-        const allCard=  galleryUlList.innerHTML+gallerySmallCard;
-        galleryUlList.innerHTML = allCard;
+        galleryUlList.insertAdjacentHTML('beforeend', gallerySmallCard);
 
-        new SimpleLightbox('.gallery-item a',{captionsData: 'alt', captionDelay:250});
+        lightbox.refresh(); 
+
+        const galleryCardHeight=galleryUlList.getBoundingClientRect().height;
+        window.scrollBy({ top: galleryCardHeight * 2,
+                         behavior: 'smooth',    });
         }
-        catch (err) {
+    catch (err) {
             galleryUlList.innerHTML= '';
             currentPage=1;
             dataUserQuery="";
@@ -110,5 +116,4 @@ loadMoreBtn.classList.add('is-hidden'); // Off кнопку пагінації
 loadMoreBtn.addEventListener('click', nextPageSearch);
 
 const galleryUlList = document.querySelector('.js-gallery');
-
 
